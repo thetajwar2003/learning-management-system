@@ -18,6 +18,8 @@ export default function Navbar() {
       : "/"
     : "/";
 
+  const lost = router.pathname === "/404";
+
   const signOut = () => {
     auth.signOut();
     router.push("/index", "/");
@@ -26,7 +28,7 @@ export default function Navbar() {
   return (
     <Menu>
       {/* User is signed in and has a classification */}
-      {classification && (
+      {!lost && classification && (
         <>
           <Menu.Item position="right">
             <Link href={link}>
@@ -48,7 +50,7 @@ export default function Navbar() {
       )}
 
       {/* User is not signed in*/}
-      {!user && (
+      {!lost && !user && (
         <>
           <Menu.Item position="right">
             <SignInButton />
@@ -57,6 +59,19 @@ export default function Navbar() {
             <Link href="/auth">
               <Button>
                 <Icon name="sign out" /> Sign Up
+              </Button>
+            </Link>
+          </Menu.Item>
+        </>
+      )}
+
+      {/* User in 404 page */}
+      {lost && (
+        <>
+          <Menu.Item position="right">
+            <Link href="/">
+              <Button>
+                <Icon name="home" /> Take Me Home, West Virginia
               </Button>
             </Link>
           </Menu.Item>
