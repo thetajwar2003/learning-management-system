@@ -101,10 +101,8 @@ function SignInButton() {
     });
   };
   return (
-    <main>
-      <Button color="google plus" onClick={signInWithGoogle}>
-        <Icon name="google" /> Log In
-      </Button>
-    </main>
+    <Button color="google plus" onClick={signInWithGoogle}>
+      <Icon name="google" /> Log In
+    </Button>
   );
 }
