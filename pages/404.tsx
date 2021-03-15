@@ -13,10 +13,16 @@ export default function Custom404() {
         }}
         textAlign="center"
       >
-        <Header as="h1">That page seems to not exist...</Header>
+        <Header as="h1">
+          That page seems to not exist...
+          <Header.Subheader>
+            Press the image/button to take you home
+          </Header.Subheader>
+        </Header>
         <Image
           src="https://www.dolgroup.in/wp-content/uploads/2019/02/dolgroup-404.gif"
           verticalAlign="middle"
+          href="/"
         />
       </Segment>
     </Grid>

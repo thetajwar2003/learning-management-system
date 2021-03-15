@@ -71,7 +71,7 @@ export default function Navbar() {
           <Menu.Item position="right">
             <Link href="/">
               <Button>
-                <Icon name="home" /> Take Me Home, West Virginia
+                <Icon name="home" /> Take Me Home, Country Roads
               </Button>
             </Link>
           </Menu.Item>
