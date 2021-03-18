@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { UserContext } from "../lib/context";
 import { auth, googleAuthProvider, firestore } from "../lib/firebase";
 import Link from "next/link";
-import { Menu, Button, Icon } from "semantic-ui-react";
+import { Menu, Button, Icon, Image } from "semantic-ui-react";
 
 export default function Navbar() {
   const { user, classification } = useContext(UserContext);
@@ -26,58 +26,64 @@ export default function Navbar() {
     router.reload();
   };
   return (
-    <Menu>
-      {/* User is signed in and has a classification */}
-      {!lost && classification && (
-        <>
-          <Menu.Item position="right">
-            <Link href={link}>
-              <Button>
-                <Icon
-                  name={classification === "student" ? "student" : "id badge"}
-                />
-                Go to Classroom
+    <>
+      <Menu>
+        {/* User is signed in and has a classification */}
+        {!lost && classification && (
+          <>
+            <Menu.Item position="right">
+              <Link href={link}>
+                <Button primary>
+                  <Icon
+                    name={classification === "student" ? "student" : "id badge"}
+                  />
+                  Go to Classroom
+                </Button>
+              </Link>
+            </Menu.Item>
+            <Menu.Item>
+              <Button onClick={signOut} secondary>
+                <Icon name="sign-out" />
+                Sign Out
               </Button>
-            </Link>
-          </Menu.Item>
-          <Menu.Item>
-            <Button onClick={signOut}>
-              <Icon name="sign-out" />
-              Sign Out
-            </Button>
-          </Menu.Item>
-        </>
-      )}
+            </Menu.Item>
+            {/* TODO: make pfp clickable and pop a settings modal */}
+            <Menu.Item>
+              <Image src={user.photoURL} circular size="mini" />
+            </Menu.Item>
+          </>
+        )}
 
-      {/* User is not signed in*/}
-      {!lost && !user && (
-        <>
-          <Menu.Item position="right">
-            <SignInButton />
-          </Menu.Item>
-          <Menu.Item>
-            <Link href="/auth">
-              <Button>
-                <Icon name="sign out" /> Sign Up
-              </Button>
-            </Link>
-          </Menu.Item>
-        </>
-      )}
+        {/* User is not signed in*/}
+        {!lost && !user && (
+          <>
+            <Menu.Item position="right">
+              <SignInButton />
+            </Menu.Item>
+            <Menu.Item>
+              <Link href="/auth">
+                <Button secondary>
+                  <Icon name="sign out" /> Sign Up
+                </Button>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
 
-      {/* User in 404 page */}
-      {lost && (
-        <>
-          <Menu.Item position="right">
-            <Link href="/">
-              <Button>
-                <Icon name="home" /> Take Me Home, Country Roads
-              </Button>
-            </Link>
-          </Menu.Item>
-        </>
-      )}
-    </Menu>
+        {/* User in 404 page */}
+        {lost && (
+          <>
+            <Menu.Item position="right">
+              <Link href="/">
+                <Button primary>
+                  <Icon name="home" /> Take Me Home, Country Roads
+                </Button>
+              </Link>
+            </Menu.Item>
+          </>
+        )}
+      </Menu>
+    </>
   );
 }
 
