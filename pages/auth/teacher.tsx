@@ -1,10 +1,25 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Form, Button, Dropdown } from "semantic-ui-react";
 import { firestore } from "../../lib/firebase";
 import { UserContext } from "../../lib/context";
 
-export default function Teacher() {
+export async function getServerSideProps() {
+  const subjectList = [];
+  const subject = await firestore.collection("subjects").get();
+  subject.forEach((doc: any) => {
+    subjectList.push({
+      text: doc.id,
+      key: doc.id,
+      value: doc.id,
+    });
+  });
+  return {
+    props: { subjectList },
+  };
+}
+
+export default function Teacher({ subjectList }) {
   const { user, classification } = useContext(UserContext);
   const router = useRouter();
 
@@ -12,31 +27,28 @@ export default function Teacher() {
   const [subject, setSubject] = useState("");
   const [year, setYear] = useState("");
 
-  /**
-   * use server side rendering or something to query in the subjects and classes
-   * @params subjects [
-   *  {
-   *    text: "English",
-   *    key: "English",
-   *    value: "English"
-   *  }
-   * ] -> use in dropdown for subjects
-   * store value in subject
-   **/
-  const subjects = [];
-
-  /**
-   * use useEffects to show the proper classes: based on subject the person chose -> add a check to make sure subject was chosen (make classes disables) then allow for classes
-   * @param classes  [
-   *  {
-   *    text: "EN09",
-   *    key: "EN09",
-   *    value: "EN09"
-   *  }
-   * ] -> use in dropdown for classes
-   * store value in year and create a code with this, the uid, and the year
-   */
-  const classes = [];
+  const years = [
+    {
+      text: "9",
+      key: "9",
+      value: "9",
+    },
+    {
+      text: "10",
+      key: "10",
+      value: "10",
+    },
+    {
+      text: "11",
+      key: "11",
+      value: "11",
+    },
+    {
+      text: "12",
+      key: "12",
+      value: "12",
+    },
+  ];
 
   const handleOnSubmit = async (e) => {
     e.preventDefault();
@@ -50,6 +62,8 @@ export default function Teacher() {
       name: user.displayName,
       email: user.email,
       dob: dob,
+      subject: subject,
+      teachingYear: year,
     });
 
     await batch.commit().then(() => {
@@ -77,15 +91,27 @@ export default function Teacher() {
       </Form.Field>
       <Form.Field>
         <label>What Subject Would You Like To Teach?</label>
-        <input
+        <Dropdown
+          selection
+          options={subjectList}
           placeholder="Subject"
-          value={subject}
-          onChange={(e) => setSubject(e.target.value)}
+          onChange={(e, { value }: any) => {
+            e.preventDefault();
+            setSubject(value);
+          }}
         />
       </Form.Field>
       <Form.Field>
-        <label>What Class Would You Like To Teach</label>
-        <Dropdown search selection selectOnBlur={false} />
+        <label>What Year Would You Like To Teach</label>
+        <Dropdown
+          selection
+          options={years}
+          placeholder="Class"
+          onChange={(e, { value }: any) => {
+            e.preventDefault();
+            setYear(value);
+          }}
+        />
       </Form.Field>
       <Button type="submit">Submit</Button>
     </Form>
