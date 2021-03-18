@@ -1,6 +1,13 @@
 import React, { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Form, Button, Dropdown } from "semantic-ui-react";
+import {
+  Form,
+  Button,
+  Dropdown,
+  Grid,
+  Segment,
+  Header,
+} from "semantic-ui-react";
 import { firestore } from "../../lib/firebase";
 import { UserContext } from "../../lib/context";
 
@@ -72,48 +79,57 @@ export default function Teacher({ subjectList }) {
   };
 
   return (
-    <Form onSubmit={handleOnSubmit}>
-      <Form.Field>
-        <label>Name</label>
-        <input disabled placeholder={user.displayName} />
-      </Form.Field>
-      <Form.Field>
-        <label>Email</label>
-        <input disabled placeholder={user.email} />
-      </Form.Field>
-      <Form.Field>
-        <label>Date of Birth</label>
-        <input
-          placeholder="Your Birthday"
-          value={dob}
-          onChange={(e) => setDob(e.target.value)}
-        />
-      </Form.Field>
-      <Form.Field>
-        <label>What Subject Would You Like To Teach?</label>
-        <Dropdown
-          selection
-          options={subjectList}
-          placeholder="Subject"
-          onChange={(e, { value }: any) => {
-            e.preventDefault();
-            setSubject(value);
-          }}
-        />
-      </Form.Field>
-      <Form.Field>
-        <label>What Year Would You Like To Teach</label>
-        <Dropdown
-          selection
-          options={years}
-          placeholder="Class"
-          onChange={(e, { value }: any) => {
-            e.preventDefault();
-            setYear(value);
-          }}
-        />
-      </Form.Field>
-      <Button type="submit">Submit</Button>
-    </Form>
+    <Grid centered verticalAlign="middle" style={{ paddingTop: "10%" }}>
+      <Grid.Row centered columns={3} verticalAlign="middle">
+        <Grid.Column width={8}>
+          <Header as="h1">Teacher Sign Up</Header>
+          <Segment>
+            <Form onSubmit={handleOnSubmit}>
+              <Form.Field>
+                <label>Name</label>
+                <input disabled placeholder={user.displayName} />
+              </Form.Field>
+              <Form.Field>
+                <label>Email</label>
+                <input disabled placeholder={user.email} />
+              </Form.Field>
+              <Form.Field>
+                <label>Date of Birth</label>
+                <input
+                  placeholder="Your Birthday"
+                  value={dob}
+                  onChange={(e) => setDob(e.target.value)}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>What Subject Would You Like To Teach?</label>
+                <Dropdown
+                  selection
+                  options={subjectList}
+                  placeholder="Subject"
+                  onChange={(e, { value }: any) => {
+                    e.preventDefault();
+                    setSubject(value);
+                  }}
+                />
+              </Form.Field>
+              <Form.Field>
+                <label>What Year Would You Like To Teach</label>
+                <Dropdown
+                  selection
+                  options={years}
+                  placeholder="Class"
+                  onChange={(e, { value }: any) => {
+                    e.preventDefault();
+                    setYear(value);
+                  }}
+                />
+              </Form.Field>
+              <Button type="submit">Submit</Button>
+            </Form>
+          </Segment>
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   );
 }
