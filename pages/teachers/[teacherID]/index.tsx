@@ -2,13 +2,12 @@ import React from "react";
 import { useRouter } from "next/router";
 
 export default function TeacherClassPage() {
+  // show all classes
   const router = useRouter();
-  const { classid } = router.query;
-  console.log(classid);
-  // `${router.pathname}?classid=${id}`
+  console.log(router.pathname);
   return (
     <div>
-      <p>Teacher slug page for a specific class</p>
+      <p>Teacher slug page for all classes</p>
     </div>
   );
 }
