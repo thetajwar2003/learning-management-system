@@ -52,12 +52,12 @@ function SignInButton() {
 function SignUp() {
   return (
     <div>
-      <Link href="/auth/student">
+      <Link href="/students">
         <Button>
           <Icon name="student" /> I am a student
         </Button>
       </Link>
-      <Link href="/auth/teacher">
+      <Link href="/teachers">
         <Button>
           <Icon name="id badge" />I am a teacher
         </Button>
