@@ -1,6 +1,8 @@
 import React, { useContext } from "react";
 import Link from "next/link";
-import { Button, Grid, Icon, Segment } from "semantic-ui-react";
+import { useRouter } from "next/router";
+
+import { Button, Dimmer, Grid, Icon, Loader, Segment } from "semantic-ui-react";
 import { auth, googleAuthProvider } from "../../lib/firebase";
 import { UserContext } from "../../lib/context";
 
@@ -27,18 +29,7 @@ export default function AuthPage() {
         textAlign="center"
       >
         <main>
-          {user ? (
-            !classification ? (
-              <SignUp />
-            ) : (
-              <main>
-                <GoToPage />
-                <SignOutButton />
-              </main>
-            )
-          ) : (
-            <SignInButton />
-          )}
+          {user ? classification ? <GoToPage /> : <SignUp /> : <SignInButton />}
         </main>
       </Segment>
     </Grid>
@@ -56,10 +47,6 @@ function SignInButton() {
       </Button>
     </main>
   );
-}
-
-function SignOutButton() {
-  return <Button onClick={() => auth.signOut()}>Sign Out</Button>;
 }
 
 function SignUp() {
@@ -81,10 +68,12 @@ function SignUp() {
 
 function GoToPage() {
   const { user, classification } = useContext(UserContext);
-  const link = classification === "student" ? "/students" : "/teachers";
+  const router = useRouter();
+  const link = classification === "student" ? "/students/" : "/teachers/";
+  router.push(link + user.uid);
   return (
-    <Link href={link}>
-      <Button>Go to page</Button>
-    </Link>
+    <Dimmer active>
+      <Loader>Loading</Loader>
+    </Dimmer>
   );
 }
