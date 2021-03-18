@@ -1,13 +1,18 @@
 import React from "react";
-import { useRouter } from "next/router";
+import { Grid } from "semantic-ui-react";
+
+import ClassModal from "../../../components/ClassModal";
 
 export default function TeacherClassPage() {
-  // show all classes
-  const router = useRouter();
-  console.log(router.pathname);
+  // TODO: Add checks in every slug page to make sure that the auth.currentuser.uid = the teacherID slug
   return (
-    <div>
-      <p>Teacher slug page for all classes</p>
-    </div>
+    <Grid centered style={{ padding: "0% 3% 0% 3%" }}>
+      <Grid.Row centered columns={1}>
+        <Grid.Column textAlign="right">
+          <ClassModal title="Create a Class" create={true} />
+          {/* pass in teacher's subject, the periods they have left */}
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   );
 }
