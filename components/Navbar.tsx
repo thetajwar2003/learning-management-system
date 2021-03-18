@@ -1,6 +1,5 @@
 import React, { useContext } from "react";
 import { useRouter } from "next/router";
-
 import { UserContext } from "../lib/context";
 import { auth, googleAuthProvider, firestore } from "../lib/firebase";
 import Link from "next/link";
@@ -19,6 +18,11 @@ export default function Navbar() {
     : "/";
 
   const lost = router.pathname === "/404";
+  const mainPage = router.pathname === "/";
+
+  const photo =
+    user?.photoURL ||
+    "https://cdn.business2community.com/wp-content/uploads/2017/08/blank-profile-picture-973460_640.png";
 
   const signOut = () => {
     auth.signOut();
@@ -29,7 +33,7 @@ export default function Navbar() {
     <>
       <Menu>
         {/* User is signed in and has a classification */}
-        {!lost && classification && (
+        {!lost && classification && mainPage && (
           <>
             <Menu.Item position="right">
               <Link href={link}>
@@ -49,7 +53,23 @@ export default function Navbar() {
             </Menu.Item>
             {/* TODO: make pfp clickable and pop a settings modal */}
             <Menu.Item>
-              <Image src={user.photoURL} circular size="mini" />
+              <Image src={photo} circular size="mini" />
+            </Menu.Item>
+          </>
+        )}
+
+        {/* User is in slug page */}
+        {!lost && classification && !mainPage && (
+          <>
+            <Menu.Item position="right">
+              <Button onClick={signOut} secondary>
+                <Icon name="sign-out" />
+                Sign Out
+              </Button>
+            </Menu.Item>
+            {/* TODO: make pfp clickable and pop a settings modal */}
+            <Menu.Item>
+              <Image src={photo} circular size="mini" />
             </Menu.Item>
           </>
         )}
@@ -57,7 +77,7 @@ export default function Navbar() {
         {/* User is not signed in*/}
         {!lost && !user && (
           <>
-            <Menu.Item position="right">
+            <Menu.Item position="right" style={{ padding: "1%" }}>
               <SignInButton />
             </Menu.Item>
             <Menu.Item>
