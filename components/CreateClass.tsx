@@ -56,7 +56,7 @@ export default function CreateClass() {
     batch.set(classRef, { uid: auth.currentUser.uid });
     batch.set(teacherRef, {
       className: e.target.className.value,
-      period: pd,
+      period: pd.toString(),
       students: [],
       semesterYear: `${currentYear}-${currentYear + 1}`,
       classCode,
@@ -99,7 +99,9 @@ export default function CreateClass() {
               <Popup
                 trigger={
                   <Button
-                    onClick={() => {
+                    role="copy"
+                    onClick={(e) => {
+                      e.preventDefault();
                       navigator.clipboard.writeText(classCode);
                     }}
                     style={{ background: "#ffffff", padding: "0%" }}
@@ -113,7 +115,7 @@ export default function CreateClass() {
               />
             </Grid.Column>
           </Grid>
-          <Button type="submit" style={{ marginTop: "2%" }}>
+          <Button role="submit" style={{ marginTop: "2%" }}>
             Create Class
           </Button>
         </Form.Field>

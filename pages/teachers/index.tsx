@@ -1,4 +1,4 @@
-import React, { useState, useContext, useEffect } from "react";
+import React, { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import {
   Form,
@@ -71,6 +71,7 @@ export default function TeacherAuth({ subjectList }) {
       dob: dob,
       subject: subject,
       teachingYear: year,
+      id: user.uid,
     });
 
     await batch.commit().then(() => {
