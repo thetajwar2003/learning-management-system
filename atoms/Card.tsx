@@ -6,7 +6,7 @@ export default function CustomCard(props) {
     (new Date().getTime() - props.cardDetails.updatedAt) / (1000 * 60)
   );
   return (
-    <Card centered>
+    <Card centered raised>
       <Card.Content>
         <Card.Header
           style={{
@@ -57,7 +57,10 @@ export default function CustomCard(props) {
               trigger={
                 <Button
                   style={{ background: "#ffffff", padding: "0%" }}
-                  onClick={props.onDelete}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    props.onDelete(props.cardDetails.classCode);
+                  }}
                 >
                   <Icon name="trash" size="large" />
                 </Button>

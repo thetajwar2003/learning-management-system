@@ -1,6 +1,7 @@
-import React from "react";
-import { Card, Grid, SemanticWIDTHS } from "semantic-ui-react";
-import { getUserWithUID, updateClass } from "../../../lib/firebase";
+import React, { useState } from "react";
+import { Card, Dimmer, Grid, Loader } from "semantic-ui-react";
+import { firestore, getUserWithUID, updateClass } from "../../../lib/firebase";
+import { useRouter } from "next/router";
 
 import ClassModal from "../../../components/ClassModal";
 import CustomCard from "../../../atoms/Card";
@@ -35,14 +36,33 @@ export async function getServerSideProps({ query }) {
 }
 
 export default function TeacherClassPage({ user, classList }) {
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
   const groupSize =
     Object.keys(classList).length >= 4 ? 4 : Object.keys(classList).length;
 
-  const deleteClass = async () => {
-    console.log("del");
+  const deleteClass = async (code) => {
+    setLoading(true);
+    const res = await firestore
+      .collection("teachers")
+      .doc(`${user.id}`)
+      .collection("classes")
+      .doc(`${code}`)
+      .delete()
+      .then(() => {
+        console.log(res);
+        router.reload();
+        setLoading(false);
+      });
   };
-  return (
-    <Grid centered style={{ padding: "0% 3% 0% 3%" }}>
+  return loading ? (
+    <>
+      <Dimmer>
+        <Loader />{" "}
+      </Dimmer>{" "}
+    </>
+  ) : (
+    <Grid style={{ padding: "0% 3% 0% 3%" }}>
       <Grid.Row centered columns={1}>
         <Grid.Column textAlign="right">
           <ClassModal title="Create a Class" create={true} />
@@ -51,7 +71,7 @@ export default function TeacherClassPage({ user, classList }) {
       </Grid.Row>
       <Grid.Row>
         {/* TODO: accommodate for phones and diferent sized screens */}
-        <Card.Group itemsPerRow={groupSize}>
+        <Card.Group itemsPerRow={groupSize} stackable>
           {classList.map((cardDetails: any) => {
             return (
               <CustomCard
