@@ -28,7 +28,7 @@ export default function CustomCard(props) {
       </Card.Content>
       <Card.Content>
         <Card.Meta textAlign="left">
-          <Label image>
+          <Label image style={{ paddingRight: "0%" }}>
             Period:
             <Label.Detail>{props.cardDetails.period}</Label.Detail>
           </Label>
