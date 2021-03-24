@@ -61,6 +61,7 @@ export default function CreateClass() {
       semesterYear: `${currentYear}-${currentYear + 1}`,
       classCode,
       path: `${auth.currentUser.uid}/${classCode}`,
+      updatedAt: new Date().getTime(),
     });
 
     await batch

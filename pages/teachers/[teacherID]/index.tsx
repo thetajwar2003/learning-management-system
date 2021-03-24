@@ -58,8 +58,8 @@ export default function TeacherClassPage({ user, classList }) {
   return loading ? (
     <>
       <Dimmer>
-        <Loader />{" "}
-      </Dimmer>{" "}
+        <Loader />
+      </Dimmer>
     </>
   ) : (
     <Grid style={{ padding: "0% 3% 0% 3%" }}>

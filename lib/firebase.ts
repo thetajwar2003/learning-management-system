@@ -39,6 +39,5 @@ export function updateClass(doc) {
   const data = doc.data();
   return {
     ...data,
-    updatedAt: new Date().getTime(),
   };
 }
