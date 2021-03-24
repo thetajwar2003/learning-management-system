@@ -1,7 +1,12 @@
 import React from "react";
 import { Card, Button, Icon, Popup, Grid, Label } from "semantic-ui-react";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export default function CustomCard(props) {
+  const router = useRouter();
+  const { teacherID } = router.query;
+
   const today = new Date();
   const dateOnCard = props.cardDetails.updatedAt;
   const updated =
@@ -12,25 +17,30 @@ export default function CustomCard(props) {
   return (
     <Card centered raised>
       <Card.Content>
-        <Card.Header
-          style={{
-            height: "100px",
-            backgroundImage: `url(https://picsum.photos/200/300/?random=${props.cardDetails.period})`,
-            backgroundSize: "cover",
-            color: "#ffffff",
-            padding: "7%",
-            borderRadius: "10px",
-            width: "400px",
-          }}
-        >
-          {props.cardDetails.className}
-        </Card.Header>
+        <Link href={`${teacherID}/${props.cardDetails.classCode}`}>
+          <Card.Header
+            as="a"
+            style={{
+              height: "100px",
+              backgroundImage: `url(https://picsum.photos/200/300/?random=${props.cardDetails.period})`,
+              backgroundSize: "cover",
+              color: "#ffffff",
+              padding: "7%",
+              borderRadius: "10px",
+              width: "400px",
+            }}
+          >
+            {props.cardDetails.className}
+          </Card.Header>
+        </Link>
       </Card.Content>
       <Card.Content>
         <Card.Meta textAlign="left">
           <Label image style={{ paddingRight: "0%" }}>
             Period:
-            <Label.Detail>{props.cardDetails.period}</Label.Detail>
+            <Label.Detail>
+              <strong>{props.cardDetails.period}</strong>
+            </Label.Detail>
           </Label>
         </Card.Meta>
         <Card.Description style={{ height: "150px" }}>
