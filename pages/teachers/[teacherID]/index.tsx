@@ -1,12 +1,11 @@
 import React, { useState } from "react";
-import { Card, Dimmer, Grid, Loader } from "semantic-ui-react";
+import { Card, Dimmer, Grid, Loader, Message } from "semantic-ui-react";
 import { firestore, getUserWithUID, updateClass } from "../../../lib/firebase";
 import { useRouter } from "next/router";
 
 import ClassModal from "../../../components/ClassModal";
 import CustomCard from "../../../atoms/Card";
 
-// TODO: fix this
 export async function getServerSideProps({ query }) {
   const { teacherID } = query;
   const teacherDoc = await getUserWithUID(teacherID, "teachers");
@@ -69,20 +68,28 @@ export default function TeacherClassPage({ user, classList }) {
           {/* pass in teacher's subject, the periods they have left */}
         </Grid.Column>
       </Grid.Row>
-      <Grid.Row>
-        {/* TODO: accommodate for phones and diferent sized screens */}
-        <Card.Group itemsPerRow={groupSize} stackable>
-          {classList.map((cardDetails: any) => {
-            return (
-              <CustomCard
-                cardDetails={cardDetails}
-                key={cardDetails.id}
-                onDelete={deleteClass}
-              />
-            );
-          })}
-        </Card.Group>
-      </Grid.Row>
+      {Object.keys(classList).length === 0 ? (
+        <Grid.Row centered>
+          <Message info>
+            You have no classes. Click the plus sign to create a class!
+          </Message>
+        </Grid.Row>
+      ) : (
+        <Grid.Row>
+          {/* TODO: accommodate for phones and diferent sized screens */}
+          <Card.Group itemsPerRow={groupSize} stackable>
+            {classList.map((cardDetails: any) => {
+              return (
+                <CustomCard
+                  cardDetails={cardDetails}
+                  key={cardDetails.id}
+                  onDelete={deleteClass}
+                />
+              );
+            })}
+          </Card.Group>
+        </Grid.Row>
+      )}
     </Grid>
   );
 }
