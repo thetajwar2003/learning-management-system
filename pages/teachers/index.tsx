@@ -57,6 +57,19 @@ export default function TeacherAuth({ subjectList }) {
     },
   ];
 
+  const subjectPic = (subject) => {
+    switch (subject) {
+      case "Math":
+        return "Math";
+      case "History":
+        return "Geography";
+      case "Science":
+        return "Chemistry";
+      case "English":
+        return "English";
+    }
+  };
+
   const handleOnSubmit = async (e) => {
     e.preventDefault();
     const userDoc = firestore.doc(`users/${user.uid}`);
@@ -72,6 +85,8 @@ export default function TeacherAuth({ subjectList }) {
       subject: subject,
       teachingYear: year,
       id: user.uid,
+      subjectPic: subjectPic(subject),
+      photoURL: user.photoURL,
     });
 
     await batch.commit().then(() => {

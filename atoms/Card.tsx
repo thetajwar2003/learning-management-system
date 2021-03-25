@@ -22,7 +22,7 @@ export default function CustomCard(props) {
             as="a"
             style={{
               height: "100px",
-              backgroundImage: `url(https://picsum.photos/200/300/?random=${props.cardDetails.period})`,
+              backgroundImage: `url(${props.subjectPic})`,
               backgroundSize: "cover",
               color: "#ffffff",
               padding: "7%",

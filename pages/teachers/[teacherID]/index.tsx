@@ -49,7 +49,6 @@ export default function TeacherClassPage({ user, classList }) {
       .doc(`${code}`)
       .delete()
       .then(() => {
-        console.log(res);
         router.reload();
         setLoading(false);
       });
@@ -65,7 +64,6 @@ export default function TeacherClassPage({ user, classList }) {
       <Grid.Row centered columns={1}>
         <Grid.Column textAlign="right">
           <ClassModal title="Create a Class" create={true} />
-          {/* pass in teacher's subject, the periods they have left */}
         </Grid.Column>
       </Grid.Row>
       {Object.keys(classList).length === 0 ? (
@@ -84,6 +82,7 @@ export default function TeacherClassPage({ user, classList }) {
                   cardDetails={cardDetails}
                   key={cardDetails.id}
                   onDelete={deleteClass}
+                  subjectPic={user.subjectPic}
                 />
               );
             })}
