@@ -8,6 +8,8 @@ import {
 } from "../../../../lib/firebase";
 import Link from "next/link";
 
+import PostModal from "../../../../components/PostModal";
+
 export async function getServerSideProps({ query }) {
   const { teacherID, classID } = query;
   const teacherDoc = await getUserWithUID(teacherID, "teachers");
@@ -21,22 +23,33 @@ export async function getServerSideProps({ query }) {
 
   let user = null;
   let classData = null;
+  let posts = null;
 
   if (teacherDoc) {
     user = teacherDoc.data();
-    const classesQuery = teacherDoc.ref.collection("classes").doc(classID);
+    const classesQuery = firestore.collection("classes").doc(classID);
 
     classData = (await classesQuery.get()).data();
+
+    if (classesQuery.collection("posts")) {
+      posts = (
+        await classesQuery
+          .collection("posts")
+          .orderBy("createdAt", "desc")
+          .get()
+      ).docs.map(updateClass);
+    }
   }
 
   return {
-    props: { user, classData },
+    props: { user, classData, posts },
   };
 }
 
-export default function TeacherSpecificClass({ user, classData }) {
+export default function TeacherSpecificClass({ user, classData, posts }) {
   const router = useRouter();
   const { teacherID, classID } = router.query;
+
   const commonLink = `/teachers/${teacherID}/${classID}/`;
   return (
     <Grid style={{ margin: "0% 15% 0% 15%", padding: "0%" }}>
@@ -100,31 +113,27 @@ export default function TeacherSpecificClass({ user, classData }) {
           </Link>
         </Grid.Column>
         <Grid.Column width={12}>
-          <Card
-            fluid
-            raised
-            style={{
-              borderRadius: "10px",
-            }}
-          >
-            <Card.Content>
-              <Card.Description>
-                <Image
-                  src={user.photoURL}
-                  circular
-                  size="mini"
-                  style={{ margin: "0% 1% 0% 1%" }}
-                />
-                Announce something to your class
-              </Card.Description>
-            </Card.Content>
-          </Card>
-          <Card>Hi</Card>
-          <Card>Hi</Card>
-          <Card>Hi</Card>
-          <Card>Hi</Card>
-          <Card>Hi</Card>
-          <Card>Hi</Card>
+          <PostModal user={user} />
+          {Object.keys(posts).length === 0 ? (
+            <Card fluid>
+              <Card.Content>
+                <Header as="h2" style={{ padding: "1% 0% 0% 2%" }}>
+                  Communicate with your class here
+                </Header>
+                <Card.Header style={{ padding: "2%", fontWeight: "normal" }}>
+                  <Icon name="comment outline" /> Create and schedule
+                  announcements
+                </Card.Header>
+                <Card.Header style={{ padding: "2%", fontWeight: "normal" }}>
+                  <Icon
+                    name="comment alternate outline"
+                    flipped="horizontally"
+                  />{" "}
+                  Respond to student posts
+                </Card.Header>
+              </Card.Content>
+            </Card>
+          ) : null}
         </Grid.Column>
       </Grid.Row>
     </Grid>

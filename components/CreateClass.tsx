@@ -32,8 +32,9 @@ export default function CreateClass() {
 
   const getPeriods = async () => {
     const classRef = await firestore
-      .doc(`teachers/${auth.currentUser.uid}`)
       .collection("classes")
+      .where("teacher", "==", auth.currentUser.uid)
+      .limit(8)
       .get();
     classRef.forEach((classID: any) => {
       period.splice(parseInt(classID.data().period) - 1, 1);
@@ -45,23 +46,22 @@ export default function CreateClass() {
     const currentYear = new Date().getFullYear();
     e.preventDefault();
 
-    const classRef = firestore.doc(`classes/${auth.currentUser.uid}`);
-    const teacherRef = firestore
-      .doc(`teachers/${auth.currentUser.uid}`)
-      .collection("classes")
-      .doc(classCode);
+    const classRef = firestore.doc(`classes/${classCode}`);
+    const teacherRef = firestore.doc(`teachers/${auth.currentUser.uid}`);
 
     const batch = firestore.batch();
 
-    batch.set(classRef, { uid: auth.currentUser.uid });
-    batch.set(teacherRef, {
+    batch.set(classRef, {
+      teacher: auth.currentUser.uid,
       className: e.target.className.value,
       period: pd.toString(),
       students: [],
       semesterYear: `${currentYear}-${currentYear + 1}`,
       classCode,
-      path: `${auth.currentUser.uid}/${classCode}`,
       updatedAt: new Date().getTime(),
+    });
+    batch.update(teacherRef, {
+      classes: [...(await teacherRef.get()).data().classes, classCode],
     });
 
     await batch

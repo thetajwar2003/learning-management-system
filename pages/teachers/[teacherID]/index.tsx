@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import { Card, Dimmer, Grid, Loader, Message } from "semantic-ui-react";
-import { firestore, getUserWithUID, updateClass } from "../../../lib/firebase";
+import {
+  firestore,
+  getClassFromTeacherID,
+  getUserWithUID,
+  updateClass,
+} from "../../../lib/firebase";
 import { useRouter } from "next/router";
 
 import ClassModal from "../../../components/ClassModal";
@@ -9,9 +14,10 @@ import CustomCard from "../../../atoms/Card";
 export async function getServerSideProps({ query }) {
   const { teacherID } = query;
   const teacherDoc = await getUserWithUID(teacherID, "teachers");
+  const classDoc = await getClassFromTeacherID(teacherID);
 
   // if there are no users, link to 404 page
-  if (!teacherDoc) {
+  if (!teacherDoc || !classDoc) {
     return {
       notFound: true,
     };
@@ -20,13 +26,9 @@ export async function getServerSideProps({ query }) {
   let user = null;
   let classList = null;
 
-  if (teacherDoc) {
+  if (teacherDoc && classDoc) {
     user = teacherDoc.data();
-    const classesQuery = teacherDoc.ref
-      .collection("classes")
-      .orderBy("period", "asc");
-
-    classList = (await classesQuery.get()).docs.map(updateClass);
+    classList = classDoc.map(updateClass);
   }
 
   return {
@@ -42,16 +44,24 @@ export default function TeacherClassPage({ user, classList }) {
 
   const deleteClass = async (code) => {
     setLoading(true);
-    const res = await firestore
-      .collection("teachers")
-      .doc(`${user.id}`)
-      .collection("classes")
-      .doc(`${code}`)
-      .delete()
-      .then(() => {
-        router.reload();
-        setLoading(false);
-      });
+    const classDoc = firestore.doc(`classes/${code}`);
+    const teacherRef = firestore.doc(`teachers/${user.id}`);
+
+    const updatedClassesList = (await teacherRef.get())
+      .data()
+      .classes.splice(code, 1);
+
+    const batch = firestore.batch();
+
+    batch.delete(classDoc);
+    batch.update(teacherRef, {
+      classes: updatedClassesList,
+    });
+
+    batch.commit().then(() => {
+      setLoading(false);
+      router.reload();
+    });
   };
   return loading ? (
     <>

@@ -35,6 +35,16 @@ export async function getUserWithUID(uid, classification) {
   return userDoc;
 }
 
+export async function getClassFromTeacherID(teacherID) {
+  const classRef = firestore.collection("classes");
+  const query = classRef
+    .where("teacher", "==", teacherID)
+    .limit(8)
+    .orderBy("period", "asc");
+  const classDocs = (await query.get()).docs;
+  return classDocs;
+}
+
 export function updateClass(doc) {
   const data = doc.data();
   return {
