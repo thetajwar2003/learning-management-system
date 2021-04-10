@@ -18,28 +18,32 @@ export default function PostModal(props) {
   const [open, setOpen] = useState(false);
   const [post, setPost] = useState("");
 
-  //TODO: posts cant be an array, they need need their own collection because they need time created/updated, and comments
+  //TODO: change updated at for class
   const handleSubmitPost = async () => {
-    console.log("here");
-    const classRef = await firestore
+    const classRef = await firestore.collection("classes").doc(`${classID}`);
+
+    const postRef = await firestore
       .collection("classes")
       .doc(`${classID}`)
       .collection("posts")
       .doc();
 
-    classRef
-      .set({
-        text: post,
-        createdAt: new Date().getTime(),
-        replies: {},
-        poster: props.user.id,
-        posterPhoto: props.user.photoURL,
-        posterName: props.user.name,
-      })
-      .then(() => {
-        setOpen(false);
-        router.reload();
-      });
+    const batch = firestore.batch();
+
+    batch.update(classRef, { updatedAt: new Date().getTime() });
+    batch.set(postRef, {
+      text: post,
+      createdAt: new Date().getTime(),
+      replies: {},
+      poster: props.user.id,
+      posterPhoto: props.user.photoURL,
+      posterName: props.user.name,
+    });
+
+    await batch.commit().then(() => {
+      setOpen(false);
+      router.reload();
+    });
   };
 
   return (

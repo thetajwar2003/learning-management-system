@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 
 import PostModal from "../../../../components/PostModal";
+import PostCard from "../../../../atoms/PostCard";
 
 export async function getServerSideProps({ query }) {
   const { teacherID, classID } = query;
@@ -133,7 +134,12 @@ export default function TeacherSpecificClass({ user, classData, posts }) {
                 </Card.Header>
               </Card.Content>
             </Card>
-          ) : null}
+          ) : (
+            posts.map((post: any) => {
+              // console.log(post);
+              return <PostCard posts={post} user={user} />;
+            })
+          )}
         </Grid.Column>
       </Grid.Row>
     </Grid>

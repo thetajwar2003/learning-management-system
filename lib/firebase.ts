@@ -47,7 +47,9 @@ export async function getClassFromTeacherID(teacherID) {
 
 export function updateClass(doc) {
   const data = doc.data();
+  const id = doc.id;
   return {
     ...data,
+    id,
   };
 }
