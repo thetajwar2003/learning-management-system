@@ -7,6 +7,7 @@ import {
   Header,
   Icon,
   Image,
+  Label,
   TextArea,
 } from "semantic-ui-react";
 import { firestore } from "../lib/firebase";
@@ -16,6 +17,8 @@ export default function PostCard({ posts, user }) {
   const { teacherID, classID } = router.query;
 
   const [text, setText] = useState("");
+
+  const time = Object.entries(posts.replies);
 
   const onPost = async () => {
     const postRef = await firestore
@@ -30,7 +33,7 @@ export default function PostCard({ posts, user }) {
           ...(await postRef.get()).data().replies,
           [new Date().getTime()]: {
             user: teacherID,
-            text,
+            text: text.replace(/\r?\n/g, "<br/>"),
           },
         },
       })
@@ -72,6 +75,15 @@ export default function PostCard({ posts, user }) {
           {posts.text}
         </Card.Description>
       </Card.Content>
+      {Object.keys(posts.replies).length === 0 ? null : (
+        <Card.Content>
+          <Button size="medium" basic>
+            <Icon name="comments" />
+            {Object.keys(posts.replies).length} class comments
+          </Button>
+          {console.log(time)}
+        </Card.Content>
+      )}
       <Card.Content extra>
         <Grid columns={3}>
           <Grid.Row>
