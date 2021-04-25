@@ -3,7 +3,7 @@ import { Card, Dimmer, Grid, Loader, Message } from "semantic-ui-react";
 import {
   firestore,
   getClassFromTeacherID,
-  getUserWithUID,
+  getUserWithClassification,
   updateClass,
 } from "../../../lib/firebase";
 import { useRouter } from "next/router";
@@ -13,7 +13,7 @@ import CustomCard from "../../../atoms/Card";
 
 export async function getServerSideProps({ query }) {
   const { teacherID } = query;
-  const teacherDoc = await getUserWithUID(teacherID, "teachers");
+  const teacherDoc = await getUserWithClassification(teacherID, "teachers");
   const classDoc = await getClassFromTeacherID(teacherID);
 
   // if there are no users, link to 404 page

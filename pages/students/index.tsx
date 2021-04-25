@@ -18,7 +18,7 @@ export default function StudentAuth() {
 
     const batch = firestore.batch();
 
-    batch.set(userDoc, { classification: "student" });
+    batch.set(userDoc, { classification: "students" });
     batch.set(studentDoc, {
       name: user.displayName,
       email: user.email,

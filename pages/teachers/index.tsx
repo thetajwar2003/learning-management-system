@@ -77,7 +77,7 @@ export default function TeacherAuth({ subjectList }) {
 
     const batch = firestore.batch();
 
-    batch.set(userDoc, { classification: "teacher" });
+    batch.set(userDoc, { classification: "teachers" });
     batch.set(teacherDoc, {
       name: user.displayName,
       email: user.email,

@@ -28,7 +28,19 @@ export const storage = firebase.storage();
  * @param {string} uid
  */
 
-export async function getUserWithUID(uid, classification) {
+// export async function getUserWithUID(uid) {
+//   const userClassification = (
+//     await firestore.collection("users").doc(`${uid}`).get()
+//   ).data()?.classification;
+
+//   const p = (await getUserWithClassification(uid, userClassification)).data();
+//   return {
+//     name: p.name,
+//     photoURL: p.photoURL,
+//   };
+// }
+
+export async function getUserWithClassification(uid, classification) {
   const usersRef = firestore.collection(`${classification}`);
   const query = usersRef.where("id", "==", uid).limit(1);
   const userDoc = (await query.get()).docs[0];

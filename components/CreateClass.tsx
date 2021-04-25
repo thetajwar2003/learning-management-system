@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Popup, Button, Icon, Form, Grid, Dropdown } from "semantic-ui-react";
 import { auth, firestore } from "../lib/firebase";
 
+import { getCurrentYear } from "../util/TimeHandler";
+
 export default function CreateClass() {
   const router = useRouter();
   var classCode = Math.random().toString(36).substring(7);
@@ -43,7 +45,7 @@ export default function CreateClass() {
 
   // TODO: Check validator
   const submitCreateClass = async (e) => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = getCurrentYear();
     e.preventDefault();
 
     const classRef = firestore.doc(`classes/${classCode}`);

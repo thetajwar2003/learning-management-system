@@ -3,14 +3,17 @@ import { useRouter } from "next/router";
 import {
   Button,
   Card,
+  Comment,
   Grid,
   Header,
   Icon,
   Image,
-  Label,
   TextArea,
 } from "semantic-ui-react";
 import { firestore } from "../lib/firebase";
+
+import { getLatestTime, getTimeOrDate } from "../util/TimeHandler";
+import AllPostsModal from "../components/AllPostsModal";
 
 export default function PostCard({ posts, user }) {
   const router = useRouter();
@@ -18,7 +21,10 @@ export default function PostCard({ posts, user }) {
 
   const [text, setText] = useState("");
 
-  const time = Object.entries(posts.replies);
+  const data = getLatestTime(Object.keys(posts.replies));
+  const userName = posts.replies[data]?.userName;
+  const userReply = posts.replies[data]?.text;
+  const userImage = posts.replies[data]?.userPhoto;
 
   const onPost = async () => {
     const postRef = await firestore
@@ -32,7 +38,8 @@ export default function PostCard({ posts, user }) {
         replies: {
           ...(await postRef.get()).data().replies,
           [new Date().getTime()]: {
-            user: teacherID,
+            userName: user.name,
+            userPhoto: user.photoURL,
             text: text.replace(/\r?\n/g, "<br/>"),
           },
         },
@@ -76,14 +83,38 @@ export default function PostCard({ posts, user }) {
         </Card.Description>
       </Card.Content>
       {Object.keys(posts.replies).length === 0 ? null : (
-        <Card.Content>
-          <Button size="medium" basic>
-            <Icon name="comments" />
-            {Object.keys(posts.replies).length} class comments
-          </Button>
-          {console.log(time)}
-        </Card.Content>
+        <>
+          <Card.Content style={{ paddingBottom: "0%" }}>
+            {/* <Button size="medium" basic>
+              <Icon name="comments" />
+              {Object.keys(posts.replies).length} class comments
+            </Button> */}
+            <AllPostsModal posts={posts} user={user} />
+          </Card.Content>
+          <Comment.Group>
+            <Comment style={{ paddingBottom: "0%" }}>
+              <Comment.Content>
+                <Image
+                  src={userImage}
+                  circular
+                  size="mini"
+                  style={{ marginLeft: "1%", marginRight: "1%" }}
+                />
+                <Comment.Author as="a" style={{ marginBottom: "0%" }}>
+                  {userName}
+                </Comment.Author>
+                <Comment.Metadata>
+                  <div>{data ? getTimeOrDate(data) : null}</div>
+                </Comment.Metadata>
+                <Comment.Text style={{ paddingLeft: "50px", marginTop: "0%" }}>
+                  {userReply}
+                </Comment.Text>
+              </Comment.Content>
+            </Comment>
+          </Comment.Group>
+        </>
       )}
+
       <Card.Content extra>
         <Grid columns={3}>
           <Grid.Row>
@@ -107,9 +138,6 @@ export default function PostCard({ posts, user }) {
               <Button
                 style={{ background: "#ffffff", paddingRight: "0%" }}
                 onClick={onPost}
-                // onClick={() => {
-                //   console.log(text.replace(/\r?\n/g, "-"));
-                // }}
               >
                 <Icon name="send" />
               </Button>

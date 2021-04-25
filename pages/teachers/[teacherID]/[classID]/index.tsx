@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import { Card, Grid, Message, Image, Header, Icon } from "semantic-ui-react";
 import {
   firestore,
-  getUserWithUID,
+  getUserWithClassification,
   updateClass,
 } from "../../../../lib/firebase";
 import Link from "next/link";
@@ -13,7 +13,7 @@ import PostCard from "../../../../atoms/PostCard";
 
 export async function getServerSideProps({ query }) {
   const { teacherID, classID } = query;
-  const teacherDoc = await getUserWithUID(teacherID, "teachers");
+  const teacherDoc = await getUserWithClassification(teacherID, "teachers");
 
   // if there are no users, link to 404 page
   if (!teacherDoc) {
