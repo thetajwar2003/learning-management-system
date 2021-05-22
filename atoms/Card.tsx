@@ -2,18 +2,14 @@ import React from "react";
 import { Card, Button, Icon, Popup, Grid, Label } from "semantic-ui-react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { getUpdated } from "../util/TimeHandler";
 
 export default function CustomCard(props) {
   const router = useRouter();
   const { teacherID } = router.query;
 
-  const today = new Date();
-  const dateOnCard = props.cardDetails.updatedAt;
-  const updated =
-    today.toISOString().split("T")[0] ===
-    new Date(dateOnCard).toISOString().split("T")[0]
-      ? "Today"
-      : new Date(dateOnCard).toLocaleDateString("en-US").split("T")[0];
+  const updated = getUpdated(props.cardDetails.updatedAt);
+
   return (
     <Card centered raised>
       <Card.Content>
@@ -22,7 +18,7 @@ export default function CustomCard(props) {
             as="a"
             style={{
               height: "100px",
-              backgroundImage: `url(https://picsum.photos/200/300/?random=${props.cardDetails.period})`,
+              backgroundImage: `url(${props.subjectPic})`,
               backgroundSize: "cover",
               color: "#ffffff",
               padding: "7%",

@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import { Popup, Button, Icon, Form, Grid, Dropdown } from "semantic-ui-react";
 import { auth, firestore } from "../lib/firebase";
 
+import { getCurrentYear } from "../util/TimeHandler";
+
 export default function CreateClass() {
   const router = useRouter();
   var classCode = Math.random().toString(36).substring(7);
@@ -32,8 +34,9 @@ export default function CreateClass() {
 
   const getPeriods = async () => {
     const classRef = await firestore
-      .doc(`teachers/${auth.currentUser.uid}`)
       .collection("classes")
+      .where("teacher", "==", auth.currentUser.uid)
+      .limit(8)
       .get();
     classRef.forEach((classID: any) => {
       period.splice(parseInt(classID.data().period) - 1, 1);
@@ -42,26 +45,25 @@ export default function CreateClass() {
 
   // TODO: Check validator
   const submitCreateClass = async (e) => {
-    const currentYear = new Date().getFullYear();
+    const currentYear = getCurrentYear();
     e.preventDefault();
 
-    const classRef = firestore.doc(`classes/${auth.currentUser.uid}`);
-    const teacherRef = firestore
-      .doc(`teachers/${auth.currentUser.uid}`)
-      .collection("classes")
-      .doc(classCode);
+    const classRef = firestore.doc(`classes/${classCode}`);
+    const teacherRef = firestore.doc(`teachers/${auth.currentUser.uid}`);
 
     const batch = firestore.batch();
 
-    batch.set(classRef, { uid: auth.currentUser.uid });
-    batch.set(teacherRef, {
+    batch.set(classRef, {
+      teacher: auth.currentUser.uid,
       className: e.target.className.value,
       period: pd.toString(),
       students: [],
       semesterYear: `${currentYear}-${currentYear + 1}`,
       classCode,
-      path: `${auth.currentUser.uid}/${classCode}`,
       updatedAt: new Date().getTime(),
+    });
+    batch.update(teacherRef, {
+      classes: [...(await teacherRef.get()).data().classes, classCode],
     });
 
     await batch

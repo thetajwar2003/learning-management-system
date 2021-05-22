@@ -28,16 +28,40 @@ export const storage = firebase.storage();
  * @param {string} uid
  */
 
-export async function getUserWithUID(uid, classification) {
+// export async function getUserWithUID(uid) {
+//   const userClassification = (
+//     await firestore.collection("users").doc(`${uid}`).get()
+//   ).data()?.classification;
+
+//   const p = (await getUserWithClassification(uid, userClassification)).data();
+//   return {
+//     name: p.name,
+//     photoURL: p.photoURL,
+//   };
+// }
+
+export async function getUserWithClassification(uid, classification) {
   const usersRef = firestore.collection(`${classification}`);
   const query = usersRef.where("id", "==", uid).limit(1);
   const userDoc = (await query.get()).docs[0];
   return userDoc;
 }
 
+export async function getClassFromTeacherID(teacherID) {
+  const classRef = firestore.collection("classes");
+  const query = classRef
+    .where("teacher", "==", teacherID)
+    .limit(8)
+    .orderBy("period", "asc");
+  const classDocs = (await query.get()).docs;
+  return classDocs;
+}
+
 export function updateClass(doc) {
   const data = doc.data();
+  const id = doc.id;
   return {
     ...data,
+    id,
   };
 }
