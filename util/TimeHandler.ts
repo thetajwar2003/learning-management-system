@@ -30,6 +30,9 @@ export function getTimeOrDate(ms) {
     if (time[0] === "0") return time.substr(1);
     else return time;
   } else {
+    console.log(
+      new Date(1621690770108).toLocaleDateString("en-US").split("T")[0]
+    );
     return new Date(ms).toLocaleDateString("en-US").split("T")[0];
   }
 }

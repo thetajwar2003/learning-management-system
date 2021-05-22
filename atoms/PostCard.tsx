@@ -14,6 +14,7 @@ import { firestore } from "../lib/firebase";
 
 import { getLatestTime, getTimeOrDate } from "../util/TimeHandler";
 import AllPostsModal from "../components/AllPostsModal";
+import PostComment from "./PostComment";
 
 export default function PostCard({ posts, user }) {
   const router = useRouter();
@@ -40,7 +41,7 @@ export default function PostCard({ posts, user }) {
           [new Date().getTime()]: {
             userName: user.name,
             userPhoto: user.photoURL,
-            text: text.replace(/\r?\n/g, "<br/>"),
+            text: text.split(/\r?\n/g),
           },
         },
       })
@@ -85,32 +86,15 @@ export default function PostCard({ posts, user }) {
       {Object.keys(posts.replies).length === 0 ? null : (
         <>
           <Card.Content style={{ paddingBottom: "0%" }}>
-            {/* <Button size="medium" basic>
-              <Icon name="comments" />
-              {Object.keys(posts.replies).length} class comments
-            </Button> */}
             <AllPostsModal posts={posts} user={user} />
           </Card.Content>
           <Comment.Group>
-            <Comment style={{ paddingBottom: "0%" }}>
-              <Comment.Content>
-                <Image
-                  src={userImage}
-                  circular
-                  size="mini"
-                  style={{ marginLeft: "1%", marginRight: "1%" }}
-                />
-                <Comment.Author as="a" style={{ marginBottom: "0%" }}>
-                  {userName}
-                </Comment.Author>
-                <Comment.Metadata>
-                  <div>{data ? getTimeOrDate(data) : null}</div>
-                </Comment.Metadata>
-                <Comment.Text style={{ paddingLeft: "50px", marginTop: "0%" }}>
-                  {userReply}
-                </Comment.Text>
-              </Comment.Content>
-            </Comment>
+            <PostComment
+              image={userImage}
+              name={userName}
+              time={data ? getTimeOrDate(data) : null}
+              reply={userReply}
+            />
           </Comment.Group>
         </>
       )}

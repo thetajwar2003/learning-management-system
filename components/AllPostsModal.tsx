@@ -1,5 +1,7 @@
 import React, { useState } from "react";
-import { Modal, Image, Button, Header, Icon } from "semantic-ui-react";
+import { Modal, Image, Button, Header, Icon, Comment } from "semantic-ui-react";
+import PostComment from "../atoms/PostComment";
+import { getTimeOrDate } from "../util/TimeHandler";
 
 import CreateClass from "./CreateClass";
 
@@ -28,28 +30,30 @@ export default function AllPostsModal({ posts, user }) {
     >
       <Modal.Header>Class Comments</Modal.Header>
       <Modal.Content>
-        <Image
-          src={posts.posterPhoto}
-          circular
-          size="mini"
-          verticalAlign="top"
-          style={{ margin: "0% 1% 0% 1%" }}
-        />
-        <Header
-          as="h5"
-          style={{ fontWeight: "normal", fontSize: 16, display: "inline" }}
-        >
-          {posts.posterName}
-          <Header.Subheader
-            style={{ fontSize: 12, display: "inline", float: "right" }}
-          >
-            {
+        <Comment.Group>
+          <PostComment
+            image={posts.posterPhoto}
+            name={posts.posterName}
+            time={
               new Date(posts.createdAt)
                 .toLocaleDateString("en-US")
                 .split("T")[0]
             }
-          </Header.Subheader>
-        </Header>
+            reply={posts.text}
+          />
+        </Comment.Group>
+        <Comment.Group>
+          {Object.keys(posts.replies).map((reply: any) => {
+            return (
+              <PostComment
+                image={posts.replies[reply]?.userPhoto}
+                name={posts.replies[reply]?.userName}
+                time={getTimeOrDate(reply)}
+                reply={posts.replies[reply]?.text}
+              />
+            );
+          })}
+        </Comment.Group>
       </Modal.Content>
     </Modal>
   );

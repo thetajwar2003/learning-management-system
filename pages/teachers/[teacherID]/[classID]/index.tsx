@@ -136,7 +136,6 @@ export default function TeacherSpecificClass({ user, classData, posts }) {
             </Card>
           ) : (
             posts.map((post: any) => {
-              // console.log(post);
               return <PostCard posts={post} user={user} />;
             })
           )}
