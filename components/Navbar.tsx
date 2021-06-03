@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import { UserContext } from "../lib/context";
 import { auth, googleAuthProvider, firestore } from "../lib/firebase";
 import Link from "next/link";
+// import Image from 'next/image'
 import { Menu, Button, Icon, Image } from "semantic-ui-react";
 
 export default function Navbar() {
@@ -35,6 +36,11 @@ export default function Navbar() {
         {/* User is signed in and has a classification */}
         {!lost && classification && mainPage && (
           <>
+            <Menu.Item position="left" style={{ padding: "0%" }}>
+              <Link href={"/"}>
+                <Image src={"/full_logo.png"} size="small" />
+              </Link>
+            </Menu.Item>
             <Menu.Item position="right">
               <Link href={link}>
                 <Button primary>
@@ -61,6 +67,11 @@ export default function Navbar() {
         {/* User is in slug page */}
         {!lost && classification && !mainPage && (
           <>
+            <Menu.Item position="left" style={{ padding: "0%" }}>
+              <Link href={"/"}>
+                <Image src={"/full_logo.png"} size="small" />
+              </Link>
+            </Menu.Item>
             <Menu.Item position="right">
               <Button onClick={signOut} secondary>
                 <Icon name="sign-out" />
@@ -77,6 +88,11 @@ export default function Navbar() {
         {/* User is not signed in*/}
         {!lost && !user && (
           <>
+            <Menu.Item position="left" style={{ padding: "0%" }}>
+              <Link href={"/"}>
+                <Image src={"/full_logo.png"} size="mini" />
+              </Link>
+            </Menu.Item>
             <Menu.Item position="right" style={{ padding: "1%" }}>
               <SignInButton />
             </Menu.Item>
